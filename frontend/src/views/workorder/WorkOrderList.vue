@@ -19,7 +19,7 @@
     <el-table :data="list" stripe v-loading="loading">
       <el-table-column prop="order_no" label="工单号" width="200">
         <template #default="{ row }">
-          <el-link type="primary" @click="$open(`/work-orders/${row.id}`)">{{ row.order_no }}</el-link>
+          <el-link type="primary" @click="$open(`/work-orders/${row.id}${statusFilter.value === 0 ? '?from=repair' : ''}`)">{{ row.order_no }}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="plate_number" label="车牌号" width="120" />

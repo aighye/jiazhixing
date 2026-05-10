@@ -313,7 +313,7 @@
         <template #header>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>财务收款</span>
-            <el-button v-if="!isFromPartsOutbound" type="primary" size="small" @click="openAddPayment">收款</el-button>
+            <el-button v-if="!isFromPartsOutbound && !isFromRepair" type="primary" size="small" @click="openAddPayment">收款</el-button>
           </div>
         </template>
         <!-- 收款汇总 -->
@@ -370,7 +370,7 @@
         <template #header>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>开票信息</span>
-            <el-button v-if="!isFromPartsOutbound" type="primary" size="small" @click="openAddInvoice">新增开票</el-button>
+            <el-button v-if="!isFromPartsOutbound && !isFromRepair" type="primary" size="small" @click="openAddInvoice">新增开票</el-button>
           </div>
         </template>
         <el-table :data="orderInvoices" stripe size="small">
@@ -663,6 +663,9 @@ const statusNames = ['在修', '结算']
 
 // 是否从配件出库步骤进入
 const isFromPartsOutbound = computed(() => (route.query.from || '') === 'parts-outbound')
+
+// 是否从在修管理进入
+const isFromRepair = computed(() => (route.query.from || '') === 'repair')
 
 // ==================== 计算属性：根据状态控制显示/编辑 ====================
 const currentStatus = computed(() => order.value?.status ?? -1)
