@@ -35,6 +35,7 @@ CREATE TABLE `appointments` (
   `status` tinyint DEFAULT '0' COMMENT '状态：0待确认 1已确认 2已完成 3已取消',
   `confirm_by` int DEFAULT NULL COMMENT '确认人ID',
   `remark` text COLLATE utf8mb4_unicode_ci COMMENT '备注',
+  `created_by` int DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -363,7 +364,7 @@ CREATE TABLE `operation_logs` (
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
   KEY `idx_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='操作日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='操作日志表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,7 +373,7 @@ CREATE TABLE `operation_logs` (
 
 LOCK TABLES `operation_logs` WRITE;
 /*!40000 ALTER TABLE `operation_logs` DISABLE KEYS */;
-INSERT INTO `operation_logs` VALUES (1,1,'admin','login','auth','用户登录','127.0.0.1',NULL,'2026-05-10 07:18:59'),(2,1,'admin','login','auth','用户登录','127.0.0.1',NULL,'2026-05-10 07:25:23');
+INSERT INTO `operation_logs` VALUES (1,1,'admin','login','auth','用户登录','127.0.0.1',NULL,'2026-05-10 07:18:59'),(2,1,'admin','login','auth','用户登录','127.0.0.1',NULL,'2026-05-10 07:25:23'),(3,1,'admin','login','auth','用户登录','127.0.0.1',NULL,'2026-05-10 07:32:26'),(4,1,'admin','login','auth','用户登录','127.0.0.1',NULL,'2026-05-10 07:33:24');
 /*!40000 ALTER TABLE `operation_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -946,7 +947,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','scrypt:32768:8:1$0nd9RsME2gFwbngo$4ea6cc2366f0f7ddabf9f2733824472326849e836d2e8a549995f1dfae709f20718e6c1342a07a0ca55d93b65930574789e79866d842b8c81ea36014bbac5f8c','系统管理员',0,'13800000000','admin@jzx.com',NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0.00,0.00,1,'2026-05-10 07:25:23','2026-05-10 07:15:37','2026-05-10 07:25:23'),(2,'manager','scrypt:32768:8:1$z3wej1El3lgyCm8x$102a4af70d85b458fefa2daa7bb6345d4f6ae38dee6a39d6348a31294d3111c87a81bb310c77e19894b98861444132ed03dc584b8822e91e546f6b01402e1965','李经理',1,'13800000001','manager@jzx.com',NULL,NULL,2,'售后服务部','服务经理','正式','EMP001','高级','服务经理','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(3,'advisor1','scrypt:32768:8:1$LyMzhrBluIygh6sg$3e47f29ac441a28eefd2c486a207cf9201a3f68e83d3915c719e5119aea7465fd2a6a2382eb8090d7d752a9af0e6a9f54b25a7735b81657e4637ff52f313a070','王顾问',1,'13800000002','advisor1@jzx.com',NULL,NULL,3,'售后服务部','服务顾问','正式','EMP002','中级','服务顾问','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(4,'advisor2','scrypt:32768:8:1$4f9BNvuBDo79MJxH$b25de89a8088396f553de5d314f07f23908b2186a942b0f01f065e0128e71496ba7a1cf333f80d6feb54fd997e2e91debc2eb684d22d5e03782ddcd6c395dc2d','陈顾问',1,'13800000003','advisor2@jzx.com',NULL,NULL,3,'售后服务部','服务顾问','正式','EMP003','初级','服务顾问','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(5,'tech1','scrypt:32768:8:1$BdlePOEZwuTmt7h3$2e50e9bef1989feaaeaa22d8eb34106a228991769da0e38505511f0036c11dd1136a0976e99a60d752ae10e041c6c1d3e05d234edc940d976ecda62f3d658f7a','张师傅',1,'13800000004','tech1@jzx.com',NULL,NULL,4,'维修车间','主修技师','正式','EMP004','高级','技师组长','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(6,'tech2','scrypt:32768:8:1$qsKY65ApAKgiF5Ld$2c4121b89e89bf005e75f0c6110a3695735aaf0908a6f03e3c7bcc31269247c586b84dd8529b96966129434566fd332dc22e93ff1a6344a3ba8e995483dd113c','刘师傅',1,'13800000005','tech2@jzx.com',NULL,NULL,4,'维修车间','维修技师','正式','EMP005','中级','维修技师','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(7,'tech3','scrypt:32768:8:1$b1jFYCJLdwJLBIse$b9ffe6934d42cc78a6238dbf3fa00578cbf3c0c845f16f439f45959f109befcebc84e90706a8dc181148a33a12a3c191706f4e93cceade03981d5fcff80e2e6c','黄师傅',1,'13800000006','tech3@jzx.com',NULL,NULL,4,'维修车间','维修技师','合同','EMP006','初级','维修技师','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(8,'parts_mgr','scrypt:32768:8:1$MAb4Hch80ywqr8yI$845007ed6f27ae7c5093b7bffa7142aa882566f4b72f1269b2e91c3b813a25f49331dd26c7ac8fc704b6fcd9bc43d4dd7dc4460b3000f888d8d3ed4280f9c6dd','赵仓管',1,'13800000007','parts@jzx.com',NULL,NULL,5,'配件部','配件主管','正式','EMP007','高级','配件主管','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(9,'finance1','scrypt:32768:8:1$EFMDvm3d7i632Iur$28dab68e582d4c1627e55b50f5c0ad5326c9b1fec2eb8a14b56d7ed2d8bf95440a4d6884d9faa45a880eeac28b0eaf324730bb9a3e43b3dc6a89bd18d69fbf58','孙会计',1,'13800000008','finance@jzx.com',NULL,NULL,6,'财务部','财务专员','正式','EMP008','中级','会计','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14');
+INSERT INTO `users` VALUES (1,'admin','scrypt:32768:8:1$0nd9RsME2gFwbngo$4ea6cc2366f0f7ddabf9f2733824472326849e836d2e8a549995f1dfae709f20718e6c1342a07a0ca55d93b65930574789e79866d842b8c81ea36014bbac5f8c','系统管理员',0,'13800000000','admin@jzx.com',NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0.00,0.00,1,'2026-05-10 07:33:24','2026-05-10 07:15:37','2026-05-10 07:33:24'),(2,'manager','scrypt:32768:8:1$z3wej1El3lgyCm8x$102a4af70d85b458fefa2daa7bb6345d4f6ae38dee6a39d6348a31294d3111c87a81bb310c77e19894b98861444132ed03dc584b8822e91e546f6b01402e1965','李经理',1,'13800000001','manager@jzx.com',NULL,NULL,2,'售后服务部','服务经理','正式','EMP001','高级','服务经理','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(3,'advisor1','scrypt:32768:8:1$LyMzhrBluIygh6sg$3e47f29ac441a28eefd2c486a207cf9201a3f68e83d3915c719e5119aea7465fd2a6a2382eb8090d7d752a9af0e6a9f54b25a7735b81657e4637ff52f313a070','王顾问',1,'13800000002','advisor1@jzx.com',NULL,NULL,3,'售后服务部','服务顾问','正式','EMP002','中级','服务顾问','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(4,'advisor2','scrypt:32768:8:1$4f9BNvuBDo79MJxH$b25de89a8088396f553de5d314f07f23908b2186a942b0f01f065e0128e71496ba7a1cf333f80d6feb54fd997e2e91debc2eb684d22d5e03782ddcd6c395dc2d','陈顾问',1,'13800000003','advisor2@jzx.com',NULL,NULL,3,'售后服务部','服务顾问','正式','EMP003','初级','服务顾问','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(5,'tech1','scrypt:32768:8:1$BdlePOEZwuTmt7h3$2e50e9bef1989feaaeaa22d8eb34106a228991769da0e38505511f0036c11dd1136a0976e99a60d752ae10e041c6c1d3e05d234edc940d976ecda62f3d658f7a','张师傅',1,'13800000004','tech1@jzx.com',NULL,NULL,4,'维修车间','主修技师','正式','EMP004','高级','技师组长','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(6,'tech2','scrypt:32768:8:1$qsKY65ApAKgiF5Ld$2c4121b89e89bf005e75f0c6110a3695735aaf0908a6f03e3c7bcc31269247c586b84dd8529b96966129434566fd332dc22e93ff1a6344a3ba8e995483dd113c','刘师傅',1,'13800000005','tech2@jzx.com',NULL,NULL,4,'维修车间','维修技师','正式','EMP005','中级','维修技师','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(7,'tech3','scrypt:32768:8:1$b1jFYCJLdwJLBIse$b9ffe6934d42cc78a6238dbf3fa00578cbf3c0c845f16f439f45959f109befcebc84e90706a8dc181148a33a12a3c191706f4e93cceade03981d5fcff80e2e6c','黄师傅',1,'13800000006','tech3@jzx.com',NULL,NULL,4,'维修车间','维修技师','合同','EMP006','初级','维修技师','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(8,'parts_mgr','scrypt:32768:8:1$MAb4Hch80ywqr8yI$845007ed6f27ae7c5093b7bffa7142aa882566f4b72f1269b2e91c3b813a25f49331dd26c7ac8fc704b6fcd9bc43d4dd7dc4460b3000f888d8d3ed4280f9c6dd','赵仓管',1,'13800000007','parts@jzx.com',NULL,NULL,5,'配件部','配件主管','正式','EMP007','高级','配件主管','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14'),(9,'finance1','scrypt:32768:8:1$EFMDvm3d7i632Iur$28dab68e582d4c1627e55b50f5c0ad5326c9b1fec2eb8a14b56d7ed2d8bf95440a4d6884d9faa45a880eeac28b0eaf324730bb9a3e43b3dc6a89bd18d69fbf58','孙会计',1,'13800000008','finance@jzx.com',NULL,NULL,6,'财务部','财务专员','正式','EMP008','中级','会计','2024-01-01',0.00,0.00,1,NULL,'2026-05-10 07:18:14','2026-05-10 07:18:14');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1135,6 +1136,8 @@ CREATE TABLE `work_orders` (
   `total_amount` decimal(10,2) DEFAULT '0.00' COMMENT '总金额',
   `received_amount` decimal(10,2) DEFAULT '0.00' COMMENT '已收金额',
   `is_paid` tinyint DEFAULT '0' COMMENT '是否已付款',
+  `repair_confirmed` tinyint DEFAULT '0' COMMENT '维修确认完成',
+  `parts_outbound_confirmed` tinyint DEFAULT '0' COMMENT '备件出库确认完成',
   `created_by` int DEFAULT NULL COMMENT '创建人ID',
   `confirmed_by` int DEFAULT NULL COMMENT '确认人ID',
   `confirmed_at` datetime DEFAULT NULL COMMENT '确认时间',
@@ -1182,4 +1185,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-10  7:28:45
+-- Dump completed on 2026-05-10  7:33:37
