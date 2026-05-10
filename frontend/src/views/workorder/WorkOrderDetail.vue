@@ -313,7 +313,7 @@
         <template #header>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>财务收款</span>
-            <el-button v-if="!isFromPartsOutbound && !isFromRepair" type="primary" size="small" @click="openAddPayment">收款</el-button>
+            <el-button v-if="!isFromPartsOutbound && !isFromRepair && !isFromSettlement" type="primary" size="small" @click="openAddPayment">收款</el-button>
           </div>
         </template>
         <!-- 收款汇总 -->
@@ -370,7 +370,7 @@
         <template #header>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>开票信息</span>
-            <el-button v-if="!isFromPartsOutbound && !isFromRepair" type="primary" size="small" @click="openAddInvoice">新增开票</el-button>
+            <el-button v-if="!isFromPartsOutbound && !isFromRepair && !isFromSettlement" type="primary" size="small" @click="openAddInvoice">新增开票</el-button>
           </div>
         </template>
         <el-table :data="orderInvoices" stripe size="small">
