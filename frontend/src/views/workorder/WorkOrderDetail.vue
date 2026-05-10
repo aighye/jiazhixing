@@ -19,7 +19,7 @@
           </div>
           <div class="status-actions">
             <el-button
-              v-if="order.status === 0 && perm('work_order:settle') && !isFromPartsOutbound"
+              v-if="order.status === 0 && perm('work_order:settle') && !isFromPartsOutbound && !isFromSettlement"
               type="success"
               @click="handleSubmitPayment"
             >
@@ -41,7 +41,7 @@
         <template #header>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>基本信息</span>
-            <el-button v-if="canEditBase && !isFromPartsOutbound" type="primary" size="small" @click="showEditBase = true">编辑</el-button>
+            <el-button v-if="canEditBase && !isFromPartsOutbound && !isFromSettlement" type="primary" size="small" @click="showEditBase = true">编辑</el-button>
           </div>
         </template>
         <el-descriptions :column="3" border>
@@ -82,13 +82,13 @@
           </el-descriptions-item>
           <el-descriptions-item label="已收金额">¥{{ actualReceived.toFixed(2) }}</el-descriptions-item>
           <el-descriptions-item label="索赔厂家">
-            <el-select v-if="order.status === 0 && !isFromPaymentList" v-model="order.claim_manufacturer" placeholder="选择" size="small" clearable filterable allow-create style="width: 160px;" @change="saveOrderField('claim_manufacturer', $event)">
+            <el-select v-if="order.status === 0 && !isFromPaymentList && !isFromSettlement" v-model="order.claim_manufacturer" placeholder="选择" size="small" clearable filterable allow-create style="width: 160px;" @change="saveOrderField('claim_manufacturer', $event)">
               <el-option v-for="m in manufacturerList" :key="m.id" :label="m.name" :value="m.name" />
             </el-select>
             <span v-else>{{ order.claim_manufacturer || '-' }}</span>
           </el-descriptions-item>
           <el-descriptions-item label="保险公司">
-            <el-select v-if="order.status === 0 && !isFromPaymentList" v-model="order.insurance_company" placeholder="选择" size="small" clearable filterable allow-create style="width: 160px;" @change="saveOrderField('insurance_company', $event)">
+            <el-select v-if="order.status === 0 && !isFromPaymentList && !isFromSettlement" v-model="order.insurance_company" placeholder="选择" size="small" clearable filterable allow-create style="width: 160px;" @change="saveOrderField('insurance_company', $event)">
               <el-option v-for="c in insuranceList" :key="c.id" :label="c.name" :value="c.name" />
             </el-select>
             <span v-else>{{ order.insurance_company || '-' }}</span>
@@ -105,7 +105,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>维修项目</span>
             <el-button
-              v-if="canEditItems"
+              v-if="canEditItems && !isFromSettlement"
               type="primary"
               size="small"
               @click="showAddItem = true"
@@ -135,7 +135,7 @@
           </el-table-column>
           <el-table-column prop="charge_type" label="收费类型" width="110">
             <template #default="{ row }">
-              <el-select v-if="canEditItems" v-model="row.charge_type" placeholder="选择" size="small" clearable style="width:100%;" @change="saveItemField(row, 'charge_type', $event)">
+              <el-select v-if="canEditItems && !isFromSettlement" v-model="row.charge_type" placeholder="选择" size="small" clearable style="width:100%;" @change="saveItemField(row, 'charge_type', $event)">
                 <el-option v-for="ft in feeTypeList" :key="ft.id" :label="ft.name" :value="ft.name" />
               </el-select>
               <span v-else>{{ row.charge_type || '-' }}</span>
@@ -152,7 +152,7 @@
           <el-table-column prop="technician_name" label="技师" width="140">
             <template #default="{ row }">
               <el-select
-                v-if="canEditItems"
+                v-if="canEditItems && !isFromSettlement"
                 v-model="row.technician_id"
                 placeholder="选择技师"
                 size="small"
@@ -170,7 +170,7 @@
               <span v-else>{{ row.technician_name || '-' }}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="canEditItems" label="操作" width="80" align="center">
+          <el-table-column v-if="canEditItems && !isFromSettlement" label="操作" width="80" align="center">
             <template #default="{ row }">
               <el-popconfirm title="确定删除此维修项目？" @confirm="handleDeleteItem(row)">
                 <template #reference>
@@ -189,7 +189,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>配件信息</span>
             <el-button
-              v-if="canEditParts"
+              v-if="canEditParts && !isFromSettlement"
               type="primary"
               size="small"
               @click="openAddPart"
@@ -246,7 +246,7 @@
           -->
           <el-table-column prop="discount_rate" label="折扣率" width="100" align="center">
             <template #default="{ row }">
-              <el-input-number v-if="canEditParts" v-model="row.discount_rate" :min="0" :max="1" :precision="2" :step="0.05" size="small" controls-position="right" style="width:80px;" @change="savePartDiscount(row, $event)" />
+              <el-input-number v-if="canEditParts && !isFromSettlement" v-model="row.discount_rate" :min="0" :max="1" :precision="2" :step="0.05" size="small" controls-position="right" style="width:80px;" @change="savePartDiscount(row, $event)" />
               <span v-else>{{ (Number(row.discount_rate || 1) * 100).toFixed(0) }}%</span>
             </template>
           </el-table-column>
@@ -265,7 +265,7 @@
           </el-table-column>
           <el-table-column prop="repair_category" label="维修类别" width="110">
             <template #default="{ row }">
-              <el-select v-if="canEditParts" v-model="row.repair_category" placeholder="选择" size="small" clearable style="width:100%;" @change="savePartField(row, 'repair_category', $event)">
+              <el-select v-if="canEditParts && !isFromSettlement" v-model="row.repair_category" placeholder="选择" size="small" clearable style="width:100%;" @change="savePartField(row, 'repair_category', $event)">
                 <el-option v-for="rc in repairCategoryList" :key="rc.id" :label="rc.name" :value="rc.name" />
               </el-select>
               <span v-else>{{ row.repair_category || '-' }}</span>
@@ -666,6 +666,9 @@ const isFromPartsOutbound = computed(() => (route.query.from || '') === 'parts-o
 
 // 是否从在修管理进入
 const isFromRepair = computed(() => (route.query.from || '') === 'repair')
+
+// 是否从结算列表进入
+const isFromSettlement = computed(() => (route.query.from || '') === 'settlement')
 
 // ==================== 计算属性：根据状态控制显示/编辑 ====================
 const currentStatus = computed(() => order.value?.status ?? -1)

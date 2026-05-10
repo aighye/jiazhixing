@@ -105,7 +105,9 @@ function paymentStatusType(status) {
 
 function goToDetail(row) {
   const path = `/work-orders/${row.id}`
-  const query = statusFilter.value === 0 ? { from: 'repair' } : {}
+  const query = {}
+  if (statusFilter.value === 0) query.from = 'repair'
+  else if (statusFilter.value === 1) query.from = 'settlement'
   router.push({ path, query })
 }
 
