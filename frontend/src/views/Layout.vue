@@ -137,7 +137,13 @@ const router = useRouter()
 const userStore = useUserStore()
 const perm = (p) => userStore.hasPermission(p)
 
-const activeMenu = computed(() => route.path)
+const activeMenu = computed(() => {
+  const path = route.path
+  const status = route.query.status
+  if (path === '/work-orders' && status === '0') return '/work-orders?status=0'
+  if (path === '/work-orders' && status === '1') return '/work-orders?status=1'
+  return path
+})
 const showPasswordDialog = ref(false)
 const passwordForm = reactive({ old_password: '', new_password: '' })
 
