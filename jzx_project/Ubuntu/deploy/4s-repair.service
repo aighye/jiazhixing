@@ -1,0 +1,23 @@
+[Unit]
+Description=4S Repair Management System
+After=network.target mysql.service
+
+[Service]
+Type=notify
+User=root
+Group=root
+WorkingDirectory=/opt/4s_repair_management
+Environment="PATH=/opt/4s_repair_management/venv/bin"
+Environment="FLASK_ENV=production"
+Environment="SECRET_KEY=4s-repair-secret-key-change-in-production-2024"
+Environment="DB_USER=root"
+Environment="DB_PASSWORD=4srepair2024"
+Environment="DB_HOST=127.0.0.1"
+Environment="DB_PORT=3306"
+Environment="DB_NAME=4s_repair_db"
+ExecStart=/opt/4s_repair_management/venv/bin/gunicorn -c /opt/4s_repair_management/gunicorn_config.py "run:app"
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
