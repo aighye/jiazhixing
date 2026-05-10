@@ -30,9 +30,12 @@ def list_payments():
     query = Payment.query
     if pay_status is not None:
         query = query.filter(Payment.status == pay_status)
-    # 按统一收款状态筛选（基于工单动态状态）
-    if payment_status:
-        query = query.join(WorkOrder, Payment.order_id == WorkOrder.id)
+    # 按统一收款状态筛选（基于工单动态状态，需在 Python 层计算）
+    payment_status_filter = payment_status
+    # 为支持动态收款状态过滤，需要 eager load WorkOrder
+    if payment_status_filter:
+        query = query.join(WorkOrder, Payment.order_id == WorkOrder.id).options(
+            db.joinedload(Payment.work_order))
     if start_date:
         query = query.filter(Payment.received_at >= start_date)
     if end_date:
@@ -53,34 +56,37 @@ def list_payments():
     pagination = query.order_by(Payment.received_at.desc()).paginate(
         page=page, per_page=per_page, error_out=False)
 
+    def _calc_payment_status(total, received):
+        if total <= 0:
+            return '无需收款'
+        elif received <= 0:
+            return '未收款'
+        elif received > total:
+            return '超收'
+        elif received >= total:
+            return '收清'
+        else:
+            return '部分收款'
+
     items = []
     for p in pagination.items:
         data = p.to_dict()
-        # 补充关联的工单信息
         if p.work_order:
             data['order_no'] = p.work_order.order_no
             data['order_status'] = p.work_order.status
             data['order_status_name'] = WorkOrder.STATUS_MAP.get(p.work_order.status, '未知')
             data['order_total'] = float(p.work_order.total_amount or 0)
-            # 动态计算工单实际已收金额
-            actual_received = sum(
-                float(py.amount or 0) for py in p.work_order.payments if py.status in (1, 2)
-            )
+            actual_received = sum(float(py.amount or 0) for py in p.work_order.payments if py.status in (1, 2))
             data['order_received'] = actual_received
-            # 动态计算收款状态（基于工单整体收款情况）
-            total = data['order_total']
-            if total <= 0:
-                data['payment_status'] = '无需收款'
-            elif actual_received <= 0:
-                data['payment_status'] = '未收款'
-            elif actual_received > total:
-                data['payment_status'] = '超收'
-            elif actual_received >= total:
-                data['payment_status'] = '收清'
-            else:
-                data['payment_status'] = '部分收款'
+            computed_status = _calc_payment_status(data['order_total'], actual_received)
+            data['payment_status'] = computed_status
+            if payment_status_filter and computed_status != payment_status_filter:
+                continue
             data['customer_name'] = p.work_order.customer.name if p.work_order.customer else ''
             data['plate_number'] = p.work_order.vehicle.plate_number if p.work_order.vehicle else ''
+        else:
+            if payment_status_filter:
+                continue
         items.append(data)
 
     return APIResponse.success({
