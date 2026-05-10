@@ -19,7 +19,7 @@
     <el-table :data="list" stripe v-loading="loading">
       <el-table-column prop="order_no" label="工单号" width="200">
         <template #default="{ row }">
-          <el-link type="primary" @click="$open(`/work-orders/${row.id}${statusFilter.value === 0 ? '?from=repair' : ''}`)">{{ row.order_no }}</el-link>
+          <el-link type="primary" @click="goToDetail(row)">{{ row.order_no }}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="plate_number" label="车牌号" width="120" />
@@ -101,6 +101,12 @@ const statusNames = { 0: '在修', 1: '结算' }
 function paymentStatusType(status) {
   const map = { '无需收款': 'info', '未收款': 'danger', '部分收款': '', '收清': 'success', '超收': 'warning' }
   return map[status] || 'info'
+}
+
+function goToDetail(row) {
+  const path = `/work-orders/${row.id}`
+  const query = statusFilter.value === 0 ? { from: 'repair' } : {}
+  router.push({ path, query })
 }
 
 const list = ref([])
