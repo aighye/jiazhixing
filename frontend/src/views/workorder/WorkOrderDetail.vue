@@ -780,7 +780,7 @@ async function handleSubmitPayment() {
   try {
     await request.post(`/work-orders/${route.params.id}/submit-payment`)
     ElMessage.success('工单已变更为结算，收款单待财务确认')
-    window.location.href = '/work-orders?status=0'
+    router.back()
   } catch (e) {
     // 错误已在拦截器中处理
   } finally {
@@ -798,7 +798,7 @@ async function handleRevertToRepair() {
   try {
     await request.put(`/work-orders/${route.params.id}/status`, { status: 0, remark: '退回在修' })
     ElMessage.success('工单已退回在修状态')
-    window.location.href = '/work-orders?status=1'
+    router.back()
   } catch (e) {
     // 错误已在拦截器中处理
   } finally {
