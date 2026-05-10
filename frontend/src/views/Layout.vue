@@ -140,8 +140,10 @@ const perm = (p) => userStore.hasPermission(p)
 const activeMenu = computed(() => {
   const path = route.path
   const status = route.query.status
-  if (path === '/work-orders' && status === '0') return '/work-orders?status=0'
-  if (path === '/work-orders' && status === '1') return '/work-orders?status=1'
+  if (path.startsWith('/work-orders') && status !== undefined) {
+    return `/work-orders?status=${status}`
+  }
+  if (path === '/work-orders') return '/work-orders'
   return path
 })
 const showPasswordDialog = ref(false)
