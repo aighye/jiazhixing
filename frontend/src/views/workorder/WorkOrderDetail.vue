@@ -23,7 +23,7 @@
               type="success"
               @click="handleSubmitPayment"
             >
-              提交收款
+              提交结算
             </el-button>
             <el-button
               v-if="order.status === 1 && perm('work_order:status')"
@@ -693,7 +693,7 @@ const showCost = computed(() => true)
 // 费用可编辑：暂不开放
 const canEditCost = computed(() => false)
 
-// 财务收款：始终显示（在修可直接提交收款）
+// 财务结算：始终显示（在修可直接提交结算）
 const showPayment = computed(() => perm('work_order:settle'))
 
 // 未收金额
@@ -749,7 +749,7 @@ const chargeTypeAmounts = computed(() => {
   return result
 })
 
-// 提交收款（在修提交待确认收款单）
+// 提交结算（在修提交待确认结算单）
 const submitPaymentLoading = ref(false)
 async function handleSubmitPayment() {
   // 校验是否存在保险/索赔项目（不依赖金额）
@@ -772,7 +772,7 @@ async function handleSubmitPayment() {
   try {
     await ElMessageBox.confirm(
       `本工单将变更为"结算"状态！`,
-      '提交收款',
+      '提交结算',
       { type: 'info', confirmButtonText: '确认提交', cancelButtonText: '取消' }
     )
   } catch { return }
